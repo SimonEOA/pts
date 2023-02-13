@@ -1,4 +1,4 @@
-import { FaPlay } from "react-icons/fa";
+import { BsFillPlayCircleFill } from "react-icons/Bs";
 
 const GameSelect = ({
   selectedIndex,
@@ -10,9 +10,16 @@ const GameSelect = ({
   onEnter: (color: React.SetStateAction<string>) => void;
 }) => {
   return (
-    <div className={`transition-all duration-500 ${selectedIndex}`}>
-      <div className=" bg-gradient-to-t from-stone-900 h-72 ">
-        <div className="px-14 pt-24">
+    <div className={`transition-all duration-500 ${selectedIndex} h-screen`}>
+      <div className=" bg-gradient-to-t from-stone-900 h-3/4 pt-5">
+        <div className="px-14 h-full">
+          <div className="flex justify-center w-full h-3/5 mb-5">
+            <div className="bg-neutral-600/60 flex rounded-md w-1/3 h-full p-5 ">
+              <div
+                className={` w-full h-fill ${selectedIndex} transition-all duration-500`}
+              ></div>
+            </div>
+          </div>
           <h2 className=" text-white font-bold text-4xl pb-6">Good evening</h2>
           <div className="grid grid-cols-2 gap-x-8 gap-y-4 lg:grid-cols-3">
             {bgColors.map((color, index) => (
@@ -28,12 +35,7 @@ const GameSelect = ({
                   {color}
                 </div>
                 <div className=" hidden place-content-center mr-5 lg:grid">
-                  <button
-                    type="button"
-                    className=" grid place-content-center transition-all duration-100 w-14 h-14 bg-green-600 rounded-full shadow-lg shadow-zinc-800 opacity-0 group-hover:opacity-100 hover:scale-110"
-                  >
-                    <FaPlay></FaPlay>
-                  </button>
+                  <BsFillPlayCircleFill className=" grid place-content-center transition-all duration-100 w-14 h-14 text-green-600 bg-black  rounded-full shadow-lg shadow-zinc-800 opacity-0 group-hover:opacity-100 hover:scale-105" />
                 </div>
               </div>
             ))}

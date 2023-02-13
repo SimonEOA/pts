@@ -1,13 +1,9 @@
 import GameSelect from "@/components/gameSelect";
 import Header from "@/components/header";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
-import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
-
   const [selectedIndex, setSelectedIndex] = useState("bg-red-800");
   const [opacity, setOpacity] = useState("bg-opacity-0");
 
@@ -32,23 +28,14 @@ export default function Home() {
 
   return (
     <div>
-      {!session && (
-        <>
-          <h1>You are not signed in</h1> <br />
-          <button onClick={() => signIn()}>Sign in</button>
-        </>
-      )}
-      {session && (
-        <div>
-          <button onClick={() => signOut()}>sign out</button>
-          <Header selectedIndex={selectedIndex} opacity={opacity}></Header>
-          <GameSelect
-            selectedIndex={selectedIndex}
-            bgColors={bgColors}
-            onEnter={updateColor}
-          ></GameSelect>
-        </div>
-      )}
+      <div className=" h-20 ">
+        <Header selectedIndex={selectedIndex} opacity={opacity}></Header>
+      </div>
+      <GameSelect
+        selectedIndex={selectedIndex}
+        bgColors={bgColors}
+        onEnter={updateColor}
+      ></GameSelect>
     </div>
   );
 }
