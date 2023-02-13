@@ -1,10 +1,12 @@
 import Canvas from "@/components/canvas";
+import { useSpotify } from "@/hooks/useSpotify";
 import { useEffect, useRef, useState } from "react";
 
 const Home = () => {
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
   const [width, setWidth] = useState<number>();
+  const spotifyApi = useSpotify();
 
   const getParentSize = () => {
     console.log("hej");
@@ -24,6 +26,8 @@ const Home = () => {
     setWidth(parentDivRef.current?.clientWidth);
   }, [parentDivRef]);
 
+  const playSpotify = async () => {};
+
   return (
     <div className=" grid grid-cols-[0.7fr_repeat(3,_1fr)_1.3fr] grid-rows-[0.5fr_repeat(3,_1fr)_0.8fr] gap-8 justify-center h-screen bg-stone-800">
       <div className=" row-span-4 bg-white"></div>
@@ -34,7 +38,9 @@ const Home = () => {
       >
         <Canvas height={height} width={width}></Canvas>
       </div>
-      <div className=" row-span-3 bg-teal-600"></div>
+      <div className=" row-span-3 bg-teal-600">
+        <button onClick={playSpotify}>get tracks</button>
+      </div>
       <div className=" col-span-full bg-blue-700"></div>
     </div>
   );
