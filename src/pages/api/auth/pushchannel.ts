@@ -10,10 +10,7 @@ const handler = (
   },
   res: { send: (arg0: ChannelAuthResponse) => void }
 ) => {
-  // see https://pusher.com/docs/channels/server_api/authenticating-users
   const { socket_id, channel_name } = req.body;
-
-  // use JWTs here to authenticate users before continuing
 
   try {
     const auth = pusher.authorizeChannel(socket_id, channel_name);

@@ -1,48 +1,22 @@
 import Canvas from "@/components/canvas";
+import { usePusher } from "@/hooks/usePusher";
 import { useSpotify } from "@/hooks/useSpotify";
+import axios from "axios";
 import { channel } from "diagnostics_channel";
 import { useSession } from "next-auth/react";
 import Pusher, { Channel } from "pusher-js";
-import { useEffect, useRef, useState } from "react";
-
-type lobbyMember = {
-  userId: string;
-  name: string;
-};
+import { SetStateAction, useEffect, useRef, useState } from "react";
 
 const Home = () => {
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
   const [width, setWidth] = useState<number>();
   const [input, setInput] = useState<string>("");
-  const pusherRef = useRef<Pusher>();
-  const channelRef = useRef<Channel>();
-  const [lobbyMembers, setLobbyMembers] = useState<lobbyMember[]>([]);
 
-  const { data: session, status } = useSession();
+  const [messageToSend, setMessageToSend] = useState("");
 
-  useEffect(() => {
-    pusherRef.current;
-    if (!pusherRef.current && session) {
-      console.log(session?.user.name);
-      console.log(pusherRef.current);
-      pusherRef.current = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
-        cluster: "eu",
-        userAuthentication: {
-          endpoint: `../api/auth/pushuser`,
-          transport: "ajax",
-          params: {
-            username: session?.user.name,
-          },
-        },
-        channelAuthorization: {
-          endpoint: `../api/auth/pushchannel`,
-          transport: "ajax",
-        },
-      });
-      pusherRef.current.signin();
-    }
-  }, [session?.user.name]);
+  const { pusherRef, channelRef, lobbyMembers, chatMessages, onSubscribe } =
+    usePusher();
 
   const getParentSize = () => {
     setHeight(parentDivRef.current?.clientHeight);
@@ -54,7 +28,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("resize", getParentSize);
     };
-  }, []);
+  }, [channelRef]);
 
   useEffect(() => {
     setHeight(parentDivRef.current?.clientHeight);
@@ -63,40 +37,25 @@ const Home = () => {
 
   const playSpotify = async () => {};
 
-  const handleChange = (input: string) => {
-    setInput(input);
-    console.log(pusherRef.current);
+  const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
+    setInput(e.target.value);
   };
 
-  const onSubmit = () => {
-    if (pusherRef.current) {
-      channelRef.current = pusherRef.current.subscribe("presence-" + input);
-
-      // when a new member successfully subscribes to the channel
-      channelRef.current.bind("pusher:subscription_succeeded", (members) => {
-        members.each((member) => {
-          // For example
-          setLobbyMembers((curr) => [
-            ...curr,
-            { userId: member.id, name: member.info.name },
-          ]);
-        });
-      });
-
-      channelRef.current.bind("pusher:member_added", (member: any) => {
-        setLobbyMembers((members) => [
-          ...members,
-          { userId: member.id, name: member.info.name },
-        ]);
-      });
-
-      channelRef.current.bind("pusher:member_removed", (member) => {
-        setLobbyMembers((members) =>
-          members.filter((el) => el.userId !== member.id)
-        );
-      });
+  const handleKeyDown = (e: { key: string }) => {
+    if (e.key === "Enter") {
+      onSubscribe(input);
     }
-    console.log(channelRef.current);
+  };
+
+  const handleSubmit = async (e) => {
+    if (e.key === "Enter") {
+      const res = await axios.post("/api/pusher/chat-update", {
+        message: messageToSend,
+        member: "simon",
+        channelName: input,
+      });
+      console.log(res);
+    }
   };
 
   return (
@@ -113,16 +72,39 @@ const Home = () => {
       >
         <Canvas height={height} width={width}></Canvas>
       </div>
-      <div className=" row-span-3 bg-teal-600">
-        <form>
-          <input
-            placeholder="Write channel name"
-            onChange={(e) => handleChange(e.target.value)}
-          ></input>
-        </form>
-        <button onClick={onSubmit}>Submit</button>
+      <div className=" row-span-3 bg-teal-600 flex flex-col">
+        <div className=" w-full h-full bg-slate-300 ">
+          {chatMessages.map((chatMessage) => {
+            return (
+              <div key={chatMessage.message}>
+                {chatMessage.member + " " + chatMessage.message}
+              </div>
+            );
+          })}
+        </div>
+        <input
+          className=" "
+          placeholder="Write message..."
+          onChange={(e) => setMessageToSend(e.target.value)}
+          onKeyDown={handleSubmit}
+        />
       </div>
       <div className=" col-span-full bg-blue-700">
+        <div>
+          <input
+            className="  w-2/3"
+            placeholder="Write channel name"
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            type="button"
+            className=" w-1/3 rounded-md bg-red-700"
+            onClick={() => onSubscribe(input)}
+          >
+            Subscribe
+          </button>
+        </div>
         <button onClick={playSpotify}>get tracks</button>
       </div>
     </div>
