@@ -37,37 +37,46 @@ export const usePusher = () => {
       channelRef.current = pusherRef.current.subscribe("presence-" + input);
 
       // when a new member successfully subscribes to the channel
-      channelRef.current.bind("pusher:subscription_succeeded", (members) => {
-        members.each((member) => {
-          // For example
-          setLobbyMembers((curr) => [
-            ...curr,
+      channelRef.current.bind(
+        "pusher:subscription_succeeded",
+        (members: { each: (arg0: (member: any) => void) => void }) => {
+          members.each((member) => {
+            // For example
+            setLobbyMembers((curr) => [
+              ...curr,
+              { userId: member.id, name: member.info.name },
+            ]);
+          });
+        }
+      );
+
+      channelRef.current.bind(
+        "pusher:member_added",
+        (member: { id: any; info: { name: any } }) => {
+          setLobbyMembers((members) => [
+            ...members,
             { userId: member.id, name: member.info.name },
           ]);
-        });
-      });
+        }
+      );
 
-      channelRef.current.bind("pusher:member_added", (member: any) => {
-        setLobbyMembers((members) => [
-          ...members,
-          { userId: member.id, name: member.info.name },
-        ]);
-      });
+      channelRef.current.bind(
+        "pusher:member_removed",
+        (member: { id: string }) => {
+          setLobbyMembers((members) =>
+            members.filter((el) => el.userId !== member.id)
+          );
+        }
+      );
 
-      channelRef.current.bind("pusher:member_removed", (member) => {
-        setLobbyMembers((members) =>
-          members.filter((el) => el.userId !== member.id)
-        );
-      });
-
-      channelRef.current.bind("chat-update", function (data) {
-        const { username, message } = data;
-        console.log(message);
-        setChatMessages((prevState) => [
-          ...prevState,
-          { member: username, message },
-        ]);
-      });
+      channelRef.current.bind(
+        "chat-update",
+        function (data: { member: any; message: any }) {
+          const { member, message } = data;
+          console.log(message);
+          setChatMessages((prevState) => [...prevState, { member, message }]);
+        }
+      );
     }
   };
 

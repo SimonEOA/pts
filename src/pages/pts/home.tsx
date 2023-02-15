@@ -13,6 +13,8 @@ const Home = () => {
   const [width, setWidth] = useState<number>();
   const [input, setInput] = useState<string>("");
 
+  const spotifyApi = useSpotify();
+
   const [messageToSend, setMessageToSend] = useState("");
 
   const { pusherRef, channelRef, lobbyMembers, chatMessages, onSubscribe } =
@@ -35,7 +37,9 @@ const Home = () => {
     setWidth(parentDivRef.current?.clientWidth);
   }, [parentDivRef]);
 
-  const playSpotify = async () => {};
+  const playSpotify = async () => {
+    spotifyApi.play();
+  };
 
   const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
     setInput(e.target.value);
@@ -47,7 +51,7 @@ const Home = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { key: string }) => {
     if (e.key === "Enter") {
       const res = await axios.post("/api/pusher/chat-update", {
         message: messageToSend,
@@ -82,6 +86,7 @@ const Home = () => {
             );
           })}
         </div>
+
         <input
           className=" "
           placeholder="Write message..."
