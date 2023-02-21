@@ -2,9 +2,6 @@ import Canvas from "@/components/canvas";
 import { usePusher } from "@/hooks/usePusher";
 import { useSpotify } from "@/hooks/useSpotify";
 import axios from "axios";
-import { channel } from "diagnostics_channel";
-import { useSession } from "next-auth/react";
-import Pusher, { Channel } from "pusher-js";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 
 const Home = () => {
@@ -30,7 +27,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("resize", getParentSize);
     };
-  }, [channelRef]);
+  }, []);
 
   useEffect(() => {
     setHeight(parentDivRef.current?.clientHeight);
@@ -76,7 +73,7 @@ const Home = () => {
       >
         <Canvas height={height} width={width}></Canvas>
       </div>
-      <div className=" row-span-3 bg-teal-600 flex flex-col">
+      <div className=" row-span-3 bg-teal-600 flex flex-col-reverse">
         <div className=" w-full h-full bg-slate-300 ">
           {chatMessages.map((chatMessage) => {
             return (

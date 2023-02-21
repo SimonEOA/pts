@@ -80,5 +80,12 @@ export const usePusher = () => {
     }
   };
 
-  return { pusherRef, channelRef, lobbyMembers, chatMessages, onSubscribe };
+  return {
+    pusherRef,
+    channelRef,
+    lobbyMembers,
+    chatMessages,
+    onSubscribe,
+    session,
+  };
 };
