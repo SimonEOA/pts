@@ -1,7 +1,7 @@
 import { usePusher } from "@/hooks/usePusher";
 import axios from "axios";
 import { SetStateAction, useEffect, useRef, useState } from "react";
-import { BsFillPlayCircleFill } from "react-icons/Bs";
+import { BsFillPlayCircleFill } from "react-icons/bs";
 
 const GameSelect = ({
   selectedIndex,
