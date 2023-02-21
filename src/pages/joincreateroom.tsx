@@ -9,39 +9,9 @@ const JoinCreateRoom = () => {
 
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
-      onSubmit();
     }
   };
 
-  const onSubmit = () => {
-    if (pusherRef.current) {
-      channelRef.current = pusherRef.current.subscribe("presence-" + input);
-
-      // when a new member successfully subscribes to the channel
-      channelRef.current.bind("pusher:subscription_succeeded", (members) => {
-        members.each((member) => {
-          // For example
-          setLobbyMembers((curr) => [
-            ...curr,
-            { userId: member.id, name: member.info.name },
-          ]);
-        });
-      });
-
-      channelRef.current.bind("pusher:member_added", (member: any) => {
-        setLobbyMembers((members) => [
-          ...members,
-          { userId: member.id, name: member.info.name },
-        ]);
-      });
-
-      channelRef.current.bind("pusher:member_removed", (member) => {
-        setLobbyMembers((members) =>
-          members.filter((el) => el.userId !== member.id)
-        );
-      });
-    }
-  };
   return (
     <div>
       <input
@@ -50,11 +20,7 @@ const JoinCreateRoom = () => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <button
-        type="button"
-        className=" w-1/3 rounded-md bg-red-700"
-        onClick={onSubmit}
-      >
+      <button type="button" className=" w-1/3 rounded-md bg-red-700">
         Submit
       </button>
     </div>
