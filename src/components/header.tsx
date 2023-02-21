@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/Io";
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 
 const Header = ({
   selectedIndex,
