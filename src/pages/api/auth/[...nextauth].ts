@@ -82,7 +82,7 @@ export default NextAuth({
         };
       }
 
-      if (token?.maxAge && Date.now() < token?.maxAge) {
+      if (token?.maxAge && Date.now() < (token?.maxAge as number)) {
         console.log("TOKEN IS STILL VALID");
         return token;
       }

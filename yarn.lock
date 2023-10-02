@@ -260,6 +260,11 @@
   dependencies:
     "@types/spotify-api" "*"
 
+"@types/spotify-web-playback-sdk@^0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@types/spotify-web-playback-sdk/-/spotify-web-playback-sdk-0.1.16.tgz#1e02abe25bf1a13b54cf456d1b449eecc27e930c"
+  integrity sha512-5U/Lx9ZIZPw3i4gMJQSwwe/981GzQhFXETrqjbaZOHuw8d/I6JFQ2WHCqdqpftdSQX+9DQpStd41obI4vIu1cw==
+
 "@typescript-eslint/parser@^5.42.0":
   version "5.49.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-5.49.0.tgz"

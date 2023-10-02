@@ -7,26 +7,31 @@ export const useDraw = (
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prevPoint = useRef<Point | null>(null);
 
+  const [points, setPoints] = useState<Point[]>([]);
+
   const onMouseDown = () => {
     setMouseDown(true);
   };
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+
     const handler = (e: MouseEvent) => {
       if (!mouseDown) return;
 
       const currentPoint = computeCanvasPosition(e);
 
-      const ctx = canvasRef.current?.getContext("2d");
+      const ctx = canvas?.getContext("2d");
 
       if (!ctx || !currentPoint) return;
 
       onDraw({ ctx, currentPoint, prevPoint: prevPoint.current });
       prevPoint.current = currentPoint;
+
+      setPoints([...points, currentPoint]);
     };
 
     const computeCanvasPosition = (e: MouseEvent) => {
-      const canvas = canvasRef.current;
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -40,14 +45,14 @@ export const useDraw = (
       prevPoint.current = null;
     };
 
-    canvasRef.current?.addEventListener("mousemove", handler);
+    canvas?.addEventListener("mousemove", handler);
     window.addEventListener("mouseup", mouseUpHandler);
 
     return () => {
-      canvasRef.current?.removeEventListener("mousemove", handler);
+      canvas?.removeEventListener("mousemove", handler);
       window.removeEventListener("mouseup", mouseUpHandler);
     };
-  }, [mouseDown, onDraw]);
+  }, [mouseDown, onDraw, points]);
 
   return { canvasRef, onMouseDown };
 };

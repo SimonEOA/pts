@@ -1,11 +1,15 @@
 import GameSelect from "@/components/gameSelect";
 import Header from "@/components/header";
+import { WebPlayback } from "@/components/webPlayback";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState("bg-red-800");
   const [opacity, setOpacity] = useState("bg-opacity-0");
+
+  const { data: session, status } = useSession();
 
   const bgColors = [
     "bg-red-800",
@@ -28,7 +32,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className=" h-20 ">
+      <div className={`h-20 ${selectedIndex}`}>
         <Header selectedIndex={selectedIndex} opacity={opacity}></Header>
       </div>
       <GameSelect
@@ -36,6 +40,7 @@ export default function Home() {
         bgColors={bgColors}
         onEnter={updateColor}
       ></GameSelect>
+      {session && <WebPlayback token={session.user.accessToken} />}
     </div>
   );
 }
